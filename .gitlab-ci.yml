@@ -1,0 +1,10 @@
+include:
+  - project: 'gdo/ml-area/templates/ci-template'
+    file: '/expose-template.yml'
+
+variables:
+  PROJECT_NAME: plani
+  ACCOUNT_ID: 905842290220
+  REGION: eu-west-1
+  INFRASTRUCTURE_MODULE: expose
+  RESOURCE_MODULE: streamlit

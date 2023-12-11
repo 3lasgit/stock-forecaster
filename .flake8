@@ -1,0 +1,5 @@
+[flake8]
+extended-ignore = B901, E203, E266, E302, E501, S101, S311, I004, N818, T002, T003, S110, S403, S301, S150, S301
+ignore = S403, S301, C408
+max-line-length = 120
+max-complexity = 11
