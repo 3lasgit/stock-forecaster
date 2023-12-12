@@ -23,6 +23,8 @@ for i in range(1,n_iter) :  # commence à 1 car on aura déjà fait au moins un 
     data = response.json()
     df = pd.concat([df,pd.json_normalize(data['rows'])], axis = 0, ignore_index = True)
 
+df=df.drop(['row_idx','truncated_cells'], axis = 1)
+
 # sortie
 output_dir = Path("%pwd").resolve().parent
 output_path = output_dir / "hugging_face_data.csv"
