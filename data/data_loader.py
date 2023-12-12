@@ -1,25 +1,30 @@
 import requests
-import json
+import pandas as pd
 from pathlib import Path
 
-# URL de l'API Hugging Face
-api_url = "https://datasets-server.huggingface.co/rows?dataset=Ammok/apple_stock_price_from_1980-2021&config=default&split=train&offset=0&length=100"
+# URL de base
+base_url = "https://datasets-server.huggingface.co/rows?dataset=Ammok/apple_stock_price_from_1980-2021&config=default&split=train"
 
-# Exécuter la requête avec requests
-response = requests.get(api_url)
+# Preparing loop's parameters
+response = requests.get(base_url)
+data = response.json()
+total_line = data['num_rows_total'] # we could request directly num_rows with the hugg_face params size but with this way we economize the first loading
+df = pd.json_normalize(data['rows'])  # initialiser la transformation des data en csv
 
-# Vérifier si la requête a réussi (code 200)
-if response.status_code == 200:
-    # Charger les données JSON
+q = total_line // 100
+r = total_line % 100
+n_iter = q if r==0 else q + 1
+
+# loading data sequentially
+for i in range(1,n_iter) :  # commence à 1 car on aura déjà fait au moins un request pour obtenir le total_line même s'il est nul
+    offset = i*100
+    api_url = f"{base_url}&offset={offset}&length=100"
+    # api_url = f"https://datasets-server.huggingface.co/rows?dataset=Ammok/apple_stock_price_from_1980-2021&config=default&split=train&offset={offset}&length=100"
+    response = requests.get(api_url)
     data = response.json()
+    df = pd.concat([df,pd.json_normalize(data['rows'])], axis = 0, ignore_index = True)
 
-    # Sauvegarder les données dans un fichier JSON (par exemple)
-    output_path = Path(__file__).resolve().parent / "hugging_face_data.json"
-    with open(
-        output_path, "w"
-    ) as f:  # with garantit la fermeture auto du fichier même en cas d'erreur
-        json.dump(data, f, indent=2)
-
-    print(f"Données enregistrées avec succès dans {output_path}")
-else:
-    print(f"Échec de la requête. Code d'erreur : {response.status_code}")
+# sortie
+output_dir = Path("%pwd").resolve().parent
+output_path = output_dir / "hugging_face_data.json"
+data_csv = df.to_csv(output_path, index=False)
