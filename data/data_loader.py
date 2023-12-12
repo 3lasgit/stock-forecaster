@@ -25,5 +25,5 @@ for i in range(1,n_iter) :  # commence à 1 car on aura déjà fait au moins un 
 
 # sortie
 output_dir = Path("%pwd").resolve().parent
-output_path = output_dir / "hugging_face_data.json"
+output_path = output_dir / "hugging_face_data.csv"
 data_csv = df.to_csv(output_path, index=False)
