@@ -19,7 +19,6 @@ n_iter = q if r==0 else q + 1
 for i in range(1,n_iter) :  # commence à 1 car on aura déjà fait au moins un request pour obtenir le total_line même s'il est nul
     offset = i*100
     api_url = f"{base_url}&offset={offset}&length=100"
-    # api_url = f"https://datasets-server.huggingface.co/rows?dataset=Ammok/apple_stock_price_from_1980-2021&config=default&split=train&offset={offset}&length=100"
     response = requests.get(api_url)
     data = response.json()
     df = pd.concat([df,pd.json_normalize(data['rows'])], axis = 0, ignore_index = True)
