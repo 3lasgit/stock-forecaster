@@ -35,4 +35,5 @@ output_dir = Path("%pwd").resolve().parent
 output_path = (
     output_dir / "apple_data.csv"
 )  # create a variable here to specify a wanted name for the file, function of the time series
-data_csv = df.to_csv(output_path, index=False)
+if df.shape[0] - pd.read_csv(output_path).shape[0] > 0 :
+    data_csv = df.to_csv(output_path, index=False)
